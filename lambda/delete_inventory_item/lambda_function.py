@@ -1,7 +1,9 @@
-import boto3
 import json
-from boto3.dynamodb.conditions import Key
 from decimal import Decimal
+
+import boto3
+from boto3.dynamodb.conditions import Key
+
 
 # Convert DynamoDB Decimal to JSON-safe types
 def convert_decimal(obj):
@@ -18,55 +20,43 @@ def convert_decimal(obj):
 def lambda_handler(event, context):
 
     # Safe path parameter extraction
-    path_params = event.get('pathParameters') or {}
-    item_id = path_params.get('id')
+    path_params = event.get("pathParameters") or {}
+    item_id = path_params.get("id")
 
     if not item_id:
-        return {
-            'statusCode': 400,
-            'body': json.dumps("Missing item_id")
-        }
+        return {"statusCode": 400, "body": json.dumps("Missing item_id")}
 
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('Inventory')
+    dynamodb = boto3.resource("dynamodb")
+    table = dynamodb.Table("Inventory")
 
     try:
         # Find item using query
-        response = table.query(
-            KeyConditionExpression=Key('item_id').eq(item_id)
-        )
+        response = table.query(KeyConditionExpression=Key("item_id").eq(item_id))
 
-        items = response.get('Items', [])
+        items = response.get("Items", [])
 
         if not items:
-            return {
-                'statusCode': 404,
-                'body': json.dumps("Item not found")
-            }
+            return {"statusCode": 404, "body": json.dumps("Item not found")}
 
         item = items[0]
 
         # Delete using BOTH keys
         table.delete_item(
-            Key={
-                'item_id': item['item_id'],
-                'location_id': item['location_id']
-            }
+            Key={"item_id": item["item_id"], "location_id": item["location_id"]}
         )
 
         # Convert Decimal values before returning
         clean_item = convert_decimal(item)
 
         return {
-            'statusCode': 200,
-            'body': json.dumps({
-                "message": f"Item {item_id} deleted successfully",
-                "deleted_item": clean_item
-            })
+            "statusCode": 200,
+            "body": json.dumps(
+                {
+                    "message": f"Item {item_id} deleted successfully",
+                    "deleted_item": clean_item,
+                }
+            ),
         }
 
     except Exception as e:
-        return {
-            'statusCode': 500,
-            'body': json.dumps(str(e))
-        }
+        return {"statusCode": 500, "body": json.dumps(str(e))}
