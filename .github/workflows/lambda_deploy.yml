@@ -7,7 +7,6 @@ on:
       - 'main'
     paths:
       - 'lambda/get_all_inventory_items/lambda_function.py'
-      - 'lambda/get_all_inventory_items/lambda_function.py'
       - 'lambda/get_inventory_item/lambda_function.py'
       - 'lambda/add_inventory_item/lambda_function.py'
       - 'lambda/delete_inventory_item/lambda_function.py'
@@ -47,7 +46,7 @@ jobs:
         run: zip function.zip lambda_function.py
         working-directory: ./lambda/get_inventory_item
       - name: Update get_inventory_item
-        run: | 
+        run: |
           aws lambda update-function-code \
           --function-name get_inventory_item \
           --zip-file fileb://function.zip --publish
@@ -61,7 +60,7 @@ jobs:
         run: zip function.zip lambda_function.py
         working-directory: ./lambda/add_inventory_item
       - name: Update add_inventory_item
-        run: | 
+        run: |
           aws lambda update-function-code \
           --function-name add_inventory_item \
           --zip-file fileb://function.zip --publish
@@ -75,7 +74,7 @@ jobs:
         run: zip function.zip lambda_function.py
         working-directory: ./lambda/delete_inventory_item
       - name: Update delete_inventory_item
-        run: | 
+        run: |
           aws lambda update-function-code \
           --function-name delete_inventory_item \
           --zip-file fileb://function.zip --publish
@@ -89,7 +88,7 @@ jobs:
         run: zip function.zip lambda_function.py
         working-directory: ./lambda/get_location_inventory_items
       - name: Update get_location_inventory_items
-        run: | 
+        run: |
           aws lambda update-function-code \
           --function-name get_location_inventory_items \
           --zip-file fileb://function.zip --publish
