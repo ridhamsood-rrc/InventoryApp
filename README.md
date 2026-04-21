@@ -1,3 +1,3 @@
-Inventory App
+# Inventory App
 
 Ridham Sood
